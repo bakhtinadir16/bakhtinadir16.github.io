@@ -93,7 +93,7 @@ const MotionToggle = () => {
   return (
     <div
       ref={rootRef}
-      className="fixed top-4 right-4 md:top-6 md:right-6 z-[70]"
+      className="fixed top-5 right-3 md:top-6 md:right-6 z-[70]"
     >
       <AnimatePresence>
         {guiding && (

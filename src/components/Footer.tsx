@@ -78,7 +78,7 @@ const Footer = () => {
         {/* Footer bar */}
         <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-stroke">
-            <ul className="flex items-center gap-6">
+            <ul className="flex flex-wrap justify-center items-center gap-x-5 gap-y-3 sm:gap-6">
               {SOCIALS.map(({ label, href }) => (
                 <li key={label}>
                   <a

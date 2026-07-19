@@ -48,6 +48,13 @@ const Explorations = () => {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   useEffect(() => {
+    // Desktop travel distances empty the section far too early on a phone's
+    // short viewport — scale the parallax down on small screens.
+    const mobile = window.innerWidth < 768;
+    const leftTravel = mobile ? -180 : -600;
+    const rightFrom = mobile ? 100 : 200;
+    const rightTravel = mobile ? -300 : -900;
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: sectionRef.current,
@@ -61,7 +68,7 @@ const Explorations = () => {
         leftRef.current,
         { y: 0 },
         {
-          y: -600,
+          y: leftTravel,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -74,9 +81,9 @@ const Explorations = () => {
 
       gsap.fromTo(
         rightRef.current,
-        { y: 200 },
+        { y: rightFrom },
         {
-          y: -900,
+          y: rightTravel,
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -95,7 +102,7 @@ const Explorations = () => {
     ref: React.RefObject<HTMLDivElement>,
     alignment: string
   ) => (
-    <div ref={ref} className={`flex flex-col gap-12 md:gap-24 ${alignment}`}>
+    <div ref={ref} className={`flex flex-col gap-10 md:gap-24 ${alignment}`}>
       {items.map((item) => (
         <button
           key={item.image}
@@ -116,7 +123,12 @@ const Explorations = () => {
   );
 
   return (
-    <section id="playground" ref={sectionRef} className="relative min-h-[300vh]">
+    // Mobile columns are much shorter, so the pinned stretch is too
+    <section
+      id="playground"
+      ref={sectionRef}
+      className="relative min-h-[150vh] md:min-h-[300vh]"
+    >
       {/* Pinned center content */}
       <div
         ref={contentRef}
@@ -146,7 +158,7 @@ const Explorations = () => {
       {/* Parallax columns */}
       <div className="absolute inset-0 z-20 pointer-events-none">
         <div className="max-w-[1400px] mx-auto h-full px-6 md:px-12">
-          <div className="grid grid-cols-2 gap-12 md:gap-40 pt-[60vh] [&_button]:pointer-events-auto">
+          <div className="grid grid-cols-2 gap-6 md:gap-40 pt-[60vh] [&_button]:pointer-events-auto">
             {renderColumn(leftColumn, leftRef, "items-start")}
             {renderColumn(rightColumn, rightRef, "items-end")}
           </div>

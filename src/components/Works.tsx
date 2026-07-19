@@ -114,8 +114,14 @@ const Works = () => {
                 backgroundSize: "4px 4px",
               }}
             />
-            {/* Hover overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-bg/70 backdrop-blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            {/* Mobile: persistent title pill — hover doesn't exist on touch */}
+            <div className="md:hidden absolute bottom-3 left-3">
+              <span className="inline-block rounded-full bg-bg/70 backdrop-blur-md border border-white/10 text-text-primary text-xs px-3.5 py-1.5">
+                <span className="font-display italic">{project.title}</span>
+              </span>
+            </div>
+            {/* Hover overlay (desktop) */}
+            <div className="absolute inset-0 hidden md:flex items-center justify-center bg-bg/70 backdrop-blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <span className="relative rounded-full">
                 <span className="absolute -inset-[2px] rounded-full accent-gradient-animated" />
                 <span className="relative block rounded-full bg-white text-black text-sm px-6 py-3">

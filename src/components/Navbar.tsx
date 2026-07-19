@@ -33,7 +33,8 @@ const Navbar = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 px-4">
+    // Mobile: extra right padding keeps the pill clear of the fixed hamburger
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 pl-4 pr-14 sm:px-4">
       <nav
         className={`inline-flex items-center rounded-full backdrop-blur-md border border-white/10 bg-surface px-2 py-2 transition-shadow duration-300 ${
           scrolled ? "shadow-md shadow-black/10" : ""
@@ -59,7 +60,7 @@ const Navbar = () => {
               <a
                 href={href}
                 onClick={(e) => scrollTo(e, href, label)}
-                className={`block text-xs sm:text-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 ${
+                className={`block text-xs sm:text-sm rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-colors duration-200 ${
                   active === label
                     ? "text-text-primary bg-stroke/50"
                     : "text-muted hover:text-text-primary hover:bg-stroke/50"
@@ -73,10 +74,10 @@ const Navbar = () => {
 
         <span className="hidden sm:block w-px h-5 bg-stroke mx-1" />
 
-        {/* Say hi */}
+        {/* Say hi — hidden on phones (hero + footer carry the contact CTAs) */}
         <a
           href="mailto:nadirbakhtics@gmail.com"
-          className="group relative text-xs sm:text-sm rounded-full"
+          className="group relative hidden sm:block text-xs sm:text-sm rounded-full"
         >
           <span className="absolute -inset-[2px] rounded-full accent-gradient-animated opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <span className="relative flex items-center gap-1 bg-surface rounded-full backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 text-text-primary">
