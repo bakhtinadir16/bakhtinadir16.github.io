@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 0 0% 4%;
+  --surface: 0 0% 8%;
+  --text: 0 0% 96%;
+  --muted: 0 0% 53%;
+  --stroke: 0 0% 12%;
+  --accent: 0 0% 96%;
+
+  --font-body: "Inter", sans-serif;
+  --font-display: "Instrument Serif", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  @apply bg-bg text-text-primary font-body antialiased;
+}
+
+/* Minimal cursor — a small ring, with an accent dot on interactive elements */
+@media (pointer: fine) {
+  html,
+  body {
+    cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5.4' fill='none' stroke='%23272e3c' stroke-width='2.6' opacity='0.55'/%3E%3Ccircle cx='8' cy='8' r='5.4' fill='none' stroke='%23f2f4f8' stroke-width='1.4'/%3E%3C/svg%3E")
+        8 8,
+      auto;
+  }
+
+  a,
+  button,
+  [role="button"],
+  select,
+  summary {
+    cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='6.2' fill='none' stroke='%23272e3c' stroke-width='2.6' opacity='0.55'/%3E%3Ccircle cx='9' cy='9' r='6.2' fill='none' stroke='%23f2f4f8' stroke-width='1.4'/%3E%3Ccircle cx='9' cy='9' r='2.2' fill='%234E85BF'/%3E%3C/svg%3E")
+        9 9,
+      pointer;
+  }
+}
+
+.accent-gradient {
+  background: linear-gradient(90deg, #89aacc 0%, #4e85bf 100%);
+}
+
+.accent-gradient-animated {
+  background: linear-gradient(90deg, #89aacc, #4e85bf, #89aacc);
+  background-size: 200% 100%;
+  /* Constant-speed one-way flow; ends of the gradient match, so the loop
+     point is invisible — no pulse/flicker at cycle boundaries. */
+  animation: gradient-flow 8s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes scroll-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes role-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradient-flow {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Slow breathing ring for the guided "Full experience" option — only the
+   glow animates, never the text (animate-pulse dimmed the whole button and
+   read as flicker). */
+.guide-glow {
+  animation: guide-glow 3s ease-in-out infinite;
+}
+
+@keyframes guide-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px rgba(137, 170, 204, 0.85),
+      0 0 16px 0 rgba(78, 133, 191, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(137, 170, 204, 0.3),
+      0 0 5px 0 rgba(78, 133, 191, 0.12);
+  }
+}
