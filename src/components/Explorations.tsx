@@ -122,8 +122,9 @@ const Explorations = () => {
     </div>
   );
 
+  // Mobile columns are much shorter, so the pinned stretch is shorter too
+  // (min-h below) and the parallax travel is scaled down (see effect above).
   return (
-    // Mobile columns are much shorter, so the pinned stretch is too
     <section
       id="playground"
       ref={sectionRef}
