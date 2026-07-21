@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import HlsVideo from "./HlsVideo";
-import { HERO_VIDEO_SRC } from "./Hero";
+
+// Spinning-galaxy Mux stream, flipped and masked into the footer (the hero
+// now uses its own local header video).
+const GALAXY_VIDEO_SRC =
+  "https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8";
 
 const SOCIALS = [
   { label: "Twitter", href: "https://x.com/tittour_" },
@@ -38,7 +42,7 @@ const Footer = () => {
         }}
       >
         <HlsVideo
-          src={HERO_VIDEO_SRC}
+          src={GALAXY_VIDEO_SRC}
           className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2 scale-y-[-1]"
         />
         <div className="absolute inset-0 bg-black/60" />

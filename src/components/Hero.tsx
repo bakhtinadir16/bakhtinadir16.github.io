@@ -1,21 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import HlsVideo from "./HlsVideo";
 import { useMotion } from "../lib/motion";
 import { useSound } from "../lib/sound";
 import { scrollToSection } from "../lib/scrollTo";
 
-export const HERO_VIDEO_SRC =
-  "https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8";
+// Local header background — a starry-night scene generated for the site.
+// Poster doubles as the reduced-motion / calm-mode still.
+const HEADER_VIDEO_SRC = "/header-bg.mp4";
+const HEADER_POSTER_SRC = "/header-poster.jpg";
 
 const ROLES = ["Developer", "Video Editor", "Designer", "Founder"];
 
 const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const { motionEnabled } = useMotion();
   const { playWhoosh } = useSound();
+
+  // Calm / reduced-motion visitors get the still poster instead of the loop.
+  const showVideo = motionEnabled;
 
   useEffect(() => {
     if (!motionEnabled) {
@@ -32,6 +37,17 @@ const Hero = () => {
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, [motionEnabled]);
+
+  // Browsers occasionally ignore the autoplay attribute; nudge play() once the
+  // element is mounted (muted + playsInline keeps it within autoplay policy).
+  useEffect(() => {
+    if (!showVideo) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  }, [showVideo]);
 
   useEffect(() => {
     const interval = setInterval(
@@ -63,23 +79,51 @@ const Hero = () => {
     <section
       id="home"
       ref={sectionRef}
-      className="relative h-screen flex items-center justify-center overflow-hidden"
+      className="relative h-screen min-h-[560px] flex items-center justify-center overflow-hidden"
     >
-      {/* Background video — masked so it dissolves into the starfield below */}
+      {/* Background video — masked at the bottom so it dissolves into the
+          starfield below (the site never uses an opaque hero background). */}
       <div
         className="absolute inset-0 overflow-hidden"
         style={{
           maskImage:
-            "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
           WebkitMaskImage:
-            "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+            "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
         }}
       >
-        <HlsVideo
-          src={HERO_VIDEO_SRC}
-          className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2"
+        {showVideo ? (
+          <video
+            ref={videoRef}
+            poster={HEADER_POSTER_SRC}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            className="absolute top-1/2 left-1/2 w-full h-full min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2"
+          >
+            <source src={HEADER_VIDEO_SRC} type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={HEADER_POSTER_SRC}
+            alt=""
+            aria-hidden="true"
+            className="absolute top-1/2 left-1/2 w-full h-full object-cover -translate-x-1/2 -translate-y-1/2"
+          />
+        )}
+        {/* Cinematic vignette (toned to the #0a0a0a bg) — darkens the edges
+            and behind the centered copy for legibility over the bright scene. */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.12) 32%, rgba(10,10,10,0.22) 68%, rgba(10,10,10,0.6) 100%)," +
+              "radial-gradient(78% 62% at 50% 50%, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0) 66%)",
+          }}
         />
-        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* Content */}
