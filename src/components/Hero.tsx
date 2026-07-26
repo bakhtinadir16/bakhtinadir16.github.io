@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useMotion } from "../lib/motion";
 import { useSound } from "../lib/sound";
 import { scrollToSection } from "../lib/scrollTo";
+import { registerAutoplayVideo } from "../lib/video";
 
 // Local header background — a starry-night scene generated for the site.
 // Poster doubles as the reduced-motion / calm-mode still.
@@ -38,15 +39,13 @@ const Hero = () => {
     return () => window.removeEventListener("mousemove", onMove);
   }, [motionEnabled]);
 
-  // Browsers occasionally ignore the autoplay attribute; nudge play() once the
-  // element is mounted (muted + playsInline keeps it within autoplay policy).
+  // Mobile blocks autoplay until a gesture and limits how many videos decode
+  // at once — the shared helper retries and pauses this loop while off screen.
   useEffect(() => {
     if (!showVideo) return;
     const v = videoRef.current;
     if (!v) return;
-    v.muted = true;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+    return registerAutoplayVideo(v);
   }, [showVideo]);
 
   useEffect(() => {
@@ -96,7 +95,8 @@ const Hero = () => {
           <video
             ref={videoRef}
             poster={HEADER_POSTER_SRC}
-            autoPlay
+            // Playback is driven by lib/video (gesture retry + on-screen gate),
+            // so the `autoplay` attribute is deliberately omitted.
             muted
             loop
             playsInline
