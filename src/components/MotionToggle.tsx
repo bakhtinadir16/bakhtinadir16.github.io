@@ -38,8 +38,7 @@ const MotionToggle = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const guideTimers = useRef<number[]>([]);
 
-  // Fired by the suggestion toast: pulse the menu button, then open the
-  // panel and spotlight the "Full experience" option.
+  // fired by the toast: pulse the button, open the panel, highlight "Full"
   useEffect(() => {
     const onGuide = () => {
       setGuiding(true);
@@ -61,9 +60,7 @@ const MotionToggle = () => {
     };
   }, []);
 
-  // The guide exists only to lead here — the moment full motion is on, stop
-  // every guide visual AND its pending timers (a stale one could re-open the
-  // panel with the highlight back on).
+  // once full motion is on, kill the guide visuals and any pending timers
   useEffect(() => {
     if (preference !== "full") return;
     guideTimers.current.forEach(clearTimeout);
@@ -100,9 +97,8 @@ const MotionToggle = () => {
           <motion.span
             initial={{ opacity: 0.9, scale: 1 }}
             animate={{ opacity: 0, scale: 2.1 }}
-            // Exit needs its own non-repeating transition: it inherits the
-            // repeat: Infinity one otherwise, so the ring never unmounts and
-            // keeps flashing around the button forever.
+            // exit needs its own transition or it inherits repeat: Infinity
+            // and the ring never goes away
             exit={{ opacity: 0, transition: { duration: 0.25, repeat: 0 } }}
             transition={{ duration: 1.1, repeat: Infinity, ease: "easeOut" }}
             className="absolute top-0 right-0 w-11 h-11 rounded-full accent-gradient pointer-events-none"

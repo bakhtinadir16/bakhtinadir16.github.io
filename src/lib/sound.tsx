@@ -13,11 +13,8 @@ type SoundPref = "auto" | "on" | "off";
 
 const STORAGE_KEY = "sound-preference";
 
-/**
- * All sounds are synthesized live with the Web Audio API — no audio files.
- * Browsers only allow audio after the first user gesture, so everything is
- * gated behind `interacted`.
- */
+// Everything here is synthesized with the Web Audio API, no audio files.
+// Browsers need a user gesture before audio can start, hence `interacted`.
 class SpaceAudioEngine {
   interacted = false;
   private ctx: AudioContext | null = null;
@@ -36,8 +33,7 @@ class SpaceAudioEngine {
     return this.ctx;
   }
 
-  /** Attempt to start the audio context without a gesture. Succeeds when the
-   *  browser already trusts the site (site setting / media engagement). */
+  // Try to start with no gesture. Works if the browser already trusts the site.
   async tryResume(): Promise<boolean> {
     const ctx = this.ensure();
     if (!ctx) return false;
@@ -45,18 +41,18 @@ class SpaceAudioEngine {
       try {
         await ctx.resume();
       } catch {
-        // Autoplay blocked — the gesture listeners will unlock later.
+        // blocked for now, the gesture listeners deal with it
       }
     }
     return ctx.state === "running";
   }
 
-  /** Soft, satisfying "pop" — like a gentle bubble tap. */
+  // Click pop
   click() {
     const ctx = this.ensure();
     if (!ctx || !this.master) return;
     if (ctx.state !== "running") {
-      // Resume is async; retry once it completes so the first click isn't silent
+      // resume is async, retry so the first click isn't silent
       void ctx.resume().then(() => {
         if (ctx.state === "running") this.click();
       });
@@ -77,7 +73,7 @@ class SpaceAudioEngine {
     osc.stop(t + 0.09);
   }
 
-  /** Airy whoosh for traveling between sections. */
+  // Whoosh, plays when travelling between sections
   whoosh() {
     const ctx = this.ensure();
     if (!ctx || !this.master) return;
@@ -105,8 +101,7 @@ class SpaceAudioEngine {
     src.stop(t + dur);
   }
 
-  /** Airy rising swoosh that tracks the loading bar. Returns whether audio
-   *  actually started (browsers block sound before a user gesture). */
+  // Loading swoosh, synced to the bar. Returns false if audio is still blocked.
   loadingSweep(durationMs: number): boolean {
     const ctx = this.ensure();
     if (!ctx || !this.master || ctx.state !== "running") return false;
@@ -120,7 +115,7 @@ class SpaceAudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     gain.connect(this.master);
 
-    // Airy shimmer: narrow-band noise gliding gently upward with the bar
+    // noise shimmer rising with the bar
     const buffer = ctx.createBuffer(
       1,
       Math.ceil(ctx.sampleRate * dur),
@@ -140,7 +135,7 @@ class SpaceAudioEngine {
     noise.start(t);
     noise.stop(t + dur);
 
-    // Barely-there sine glide underneath, softening the noise
+    // quiet sine underneath
     const osc = ctx.createOscillator();
     const oscGain = ctx.createGain();
     osc.type = "sine";
@@ -154,7 +149,7 @@ class SpaceAudioEngine {
     osc.start(t);
     osc.stop(t + dur);
 
-    // Soft two-note "ready" chime as the bar completes
+    // two note chime when the bar finishes
     const chimeAt = t + Math.max(dur - 0.05, 0);
     [660, 990].forEach((freq, i) => {
       const bell = ctx.createOscillator();
@@ -174,11 +169,8 @@ class SpaceAudioEngine {
     return true;
   }
 
-  /**
-   * Looped ambient music: a soft Cmaj7 → Am7 → Fmaj7 → Gadd9 pad progression
-   * with sparse plucked notes echoing through a space delay. Notes are chosen
-   * with light randomness so the loop never repeats exactly.
-   */
+  // Ambient loop. Cmaj7 / Am7 / Fmaj7 / Gadd9 pads plus random plucks through
+  // a delay, so it never repeats exactly.
   startAmbient() {
     const ctx = this.ensure();
     if (!ctx || !this.master || this.ambient) return;
@@ -189,7 +181,7 @@ class SpaceAudioEngine {
     gain.connect(this.master);
     const stops: (() => void)[] = [];
 
-    // Space echo bus shared by the plucks
+    // shared delay bus for the plucks
     const delay = ctx.createDelay(1.5);
     delay.delayTime.value = 0.42;
     const feedback = ctx.createGain();
@@ -214,7 +206,7 @@ class SpaceAudioEngine {
     const CHORD_DURATION = 4.5;
 
     const schedulePad = (chord: number[], at: number) => {
-      // Sub-bass root one octave down grounds each chord
+      // sub bass root, one octave down
       const notes = [chord[0] / 2, ...chord];
       notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
@@ -255,7 +247,7 @@ class SpaceAudioEngine {
       }
     };
 
-    // Look-ahead scheduler keeps the loop sample-accurate without long timers
+    // look-ahead scheduler, keeps the timing tight
     let chordIndex = 0;
     let nextChordAt = ctx.currentTime + 0.1;
     const tick = () => {
@@ -291,15 +283,13 @@ class SpaceAudioEngine {
 
 const engine = new SpaceAudioEngine();
 
-// DEV-only hook (like __forceWarp): the in-app preview can't click, so
-// tooling inspects unlock state through this instead.
+// dev only, handy for checking the engine state from the console
 if (import.meta.env.DEV) {
   (window as unknown as { __soundEngine?: SpaceAudioEngine }).__soundEngine =
     engine;
 }
 
-// Without this, Vite HMR orphans the old engine mid-song and the mute
-// button can no longer reach it.
+// kill the old engine on HMR, otherwise mute stops working in dev
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     engine.stopAmbient();
@@ -327,14 +317,12 @@ export const SoundProvider = ({ children }: { children: ReactNode }) => {
     return saved === "on" || saved === "off" ? saved : "auto";
   });
 
-  // Sound follows the motion preference until the visitor chooses explicitly.
+  // follows the motion pref until the visitor picks one
   const soundOn = pref === "auto" ? motionEnabled : pref === "on";
   const soundOnRef = useRef(soundOn);
   soundOnRef.current = soundOn;
 
-  // Try to start audio with zero clicks. Browsers allow this when the visitor
-  // has granted sound for the site (or visits often); resume() settles
-  // asynchronously, so poll briefly instead of checking once.
+  // Try to start with no clicks at all. resume() settles async so poll a bit.
   useEffect(() => {
     let cancelled = false;
     let attempts = 0;
@@ -356,7 +344,7 @@ export const SoundProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // Fallback: unlock on the first gesture of any kind, not just a click.
+  // fallback, unlock on any first gesture
   useEffect(() => {
     const unlock = () => {
       engine.interacted = true;

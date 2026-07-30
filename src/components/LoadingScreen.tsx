@@ -16,10 +16,8 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const rafRef = useRef(0);
   const { playLoading } = useSound();
 
-  // Play the loading swoosh immediately when the browser allows autoplay
-  // (e.g. returning visitors); otherwise start it on the first gesture.
-  // The audio context resumes asynchronously after a gesture, so retry a
-  // few times instead of checking once and giving up.
+  // Start the swoosh right away if audio is allowed, otherwise on first gesture.
+  // resume() is async so retry a few times instead of giving up.
   useEffect(() => {
     const mountedAt = performance.now();
     let started = false;
@@ -41,8 +39,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
       clearTimeout(retryTimer);
       retry();
     };
-    // Retry right away too: when autoplay is allowed, the context resumes
-    // asynchronously a moment after mount — no gesture ever arrives.
+    // also retry immediately, no gesture arrives when autoplay is allowed
     retry();
     window.addEventListener("pointerdown", onGesture);
     window.addEventListener("keydown", onGesture);

@@ -14,11 +14,9 @@ const HlsVideo = ({ src, className }: HlsVideoProps) => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Gesture-aware + visibility-gated autoplay (see lib/video).
     const unregister = registerAutoplayVideo(video);
-    // The source attaches asynchronously, so the `autoplay` attribute alone
-    // never fires — kick playback off once the stream is actually ready.
-    // requestPlay (not play) so an off-screen footer stays paused.
+    // hls attaches the source late, so start it once the stream is ready.
+    // requestPlay, not play, so an off-screen footer stays paused.
     const start = () => requestPlay(video);
 
     if (Hls.isSupported()) {
@@ -46,8 +44,7 @@ const HlsVideo = ({ src, className }: HlsVideoProps) => {
   }, [src]);
 
   return (
-    // No `autoplay` attribute on purpose: the browser would start this as soon
-    // as data arrives, ignoring the on-screen gate. lib/video drives playback.
+    // no autoplay attr, it would ignore the on-screen check
     <video
       ref={videoRef}
       muted

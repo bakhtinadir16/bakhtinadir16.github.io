@@ -16,13 +16,11 @@ const ITEMS: { image: string; rotation: number; position?: string }[] = [
     rotation: 3,
   },
   {
-    // The video generator's "Dual Channel Story Studio" web UI
     image: "/videogen-studio.png",
     rotation: -2,
     position: "50% 0%",
   },
   {
-    // METRO logo — owner's brand/logo design work
     image: "/metro-logo.jpg",
     rotation: 5,
   },
@@ -48,8 +46,7 @@ const Explorations = () => {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   useEffect(() => {
-    // Desktop travel distances empty the section far too early on a phone's
-    // short viewport — scale the parallax down on small screens.
+    // smaller travel on phones, the desktop values empty the section too early
     const mobile = window.innerWidth < 768;
     const leftTravel = mobile ? -180 : -600;
     const rightFrom = mobile ? 100 : 200;
@@ -122,8 +119,6 @@ const Explorations = () => {
     </div>
   );
 
-  // Mobile columns are much shorter, so the pinned stretch is shorter too
-  // (min-h below) and the parallax travel is scaled down (see effect above).
   return (
     <section
       id="playground"

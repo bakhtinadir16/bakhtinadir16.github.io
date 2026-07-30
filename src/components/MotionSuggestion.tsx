@@ -5,12 +5,8 @@ import { useMotion } from "../lib/motion";
 const SHOW_AFTER_MS = 4500;
 const VISIBLE_FOR_MS = 12000;
 
-/**
- * Gentle nudge shown to any visitor in reduced-motion mode, whether it came
- * from their system preference or a saved choice — once per session.
- * Auto-dismisses; accepting hands off to MotionToggle which guides them to
- * the switch.
- */
+// Toast shown once per session when motion is off. "Show me how" hands off
+// to MotionToggle.
 const MotionSuggestion = () => {
   const { motionEnabled } = useMotion();
   const [visible, setVisible] = useState(false);

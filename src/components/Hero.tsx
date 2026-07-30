@@ -5,8 +5,7 @@ import { useSound } from "../lib/sound";
 import { scrollToSection } from "../lib/scrollTo";
 import { registerAutoplayVideo } from "../lib/video";
 
-// Local header background — a starry-night scene generated for the site.
-// Poster doubles as the reduced-motion / calm-mode still.
+// Header background. The poster doubles as the calm-mode still.
 const HEADER_VIDEO_SRC = "/header-bg.mp4";
 const HEADER_POSTER_SRC = "/header-poster.jpg";
 
@@ -20,7 +19,7 @@ const Hero = () => {
   const { motionEnabled } = useMotion();
   const { playWhoosh } = useSound();
 
-  // Calm / reduced-motion visitors get the still poster instead of the loop.
+  // calm mode shows the poster instead of the loop
   const showVideo = motionEnabled;
 
   useEffect(() => {
@@ -39,8 +38,7 @@ const Hero = () => {
     return () => window.removeEventListener("mousemove", onMove);
   }, [motionEnabled]);
 
-  // Mobile blocks autoplay until a gesture and limits how many videos decode
-  // at once — the shared helper retries and pauses this loop while off screen.
+  // mobile blocks autoplay until a tap, see lib/video
   useEffect(() => {
     if (!showVideo) return;
     const v = videoRef.current;
@@ -80,8 +78,7 @@ const Hero = () => {
       ref={sectionRef}
       className="relative h-screen min-h-[560px] flex items-center justify-center overflow-hidden"
     >
-      {/* Background video — masked at the bottom so it dissolves into the
-          starfield below (the site never uses an opaque hero background). */}
+      {/* Video, masked at the bottom so it fades into the starfield */}
       <div
         className="absolute inset-0 overflow-hidden"
         style={{
@@ -95,8 +92,7 @@ const Hero = () => {
           <video
             ref={videoRef}
             poster={HEADER_POSTER_SRC}
-            // Playback is driven by lib/video (gesture retry + on-screen gate),
-            // so the `autoplay` attribute is deliberately omitted.
+            // no autoplay attr on purpose, lib/video drives playback
             muted
             loop
             playsInline
@@ -114,8 +110,7 @@ const Hero = () => {
             className="absolute top-1/2 left-1/2 w-full h-full object-cover -translate-x-1/2 -translate-y-1/2"
           />
         )}
-        {/* Cinematic vignette (toned to the #0a0a0a bg) — darkens the edges
-            and behind the centered copy for legibility over the bright scene. */}
+        {/* Vignette, keeps the copy readable over the scene */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{

@@ -9,7 +9,7 @@ interface Project {
   image: string;
   span: string;
   aspect: string;
-  /** When set, the card becomes a real link (live site, repo, case study…) */
+  // set this to make the card a real link
   href?: string;
 }
 
@@ -114,7 +114,7 @@ const Works = () => {
                 backgroundSize: "4px 4px",
               }}
             />
-            {/* Mobile: persistent title pill — hover doesn't exist on touch */}
+            {/* Title pill on mobile, no hover on touch */}
             <div className="md:hidden absolute bottom-3 left-3">
               <span className="inline-block rounded-full bg-bg/70 backdrop-blur-md border border-white/10 text-text-primary text-xs px-3.5 py-1.5">
                 <span className="font-display italic">{project.title}</span>

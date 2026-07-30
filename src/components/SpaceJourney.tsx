@@ -74,7 +74,7 @@ const SpaceJourney = () => {
     const draw = () => {
       time += 0.016;
       const scroll = window.scrollY;
-      // Smooth the scroll velocity so warp streaks ease in and out
+      // smooth the scroll velocity so the streaks ease in and out
       warpVelocity += (scroll - lastScroll - warpVelocity) * 0.08;
       lastScroll = scroll;
 
@@ -95,7 +95,7 @@ const SpaceJourney = () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Drifting nebula glows in the accent palette, nudged by the cursor
+      // nebula glows, nudged by the cursor
       const nx =
         width * (0.25 + 0.08 * Math.sin(time * 0.04)) - mouse.x * 30;
       const ny =
@@ -117,7 +117,7 @@ const SpaceJourney = () => {
       const band = height * 1.3; // wrap band taller than viewport to avoid pop-in
       for (const star of stars) {
         const depthFactor = 0.15 + star.depth * 0.85;
-        // Parallax travel: stars drift past as you scroll, faster when closer
+        // parallax, closer stars move faster
         const rawY = star.y * band - scroll * depthFactor * 0.35;
         const parallaxY = motionOff ? 0 : mouse.y * 26 * depthFactor;
         const parallaxX = motionOff ? 0 : mouse.x * 42 * depthFactor;
@@ -139,7 +139,7 @@ const SpaceJourney = () => {
           : Math.max(Math.min(warpVelocity * depthFactor * 1.1, 180), -180);
 
         if (Math.abs(streak) > 3) {
-          // Warp mode: stretch the star along the direction of travel
+          // warp, stretch the star along the travel direction
           const gradient = ctx.createLinearGradient(px, py, px, py + streak);
           gradient.addColorStop(0, `rgba(${star.color}, ${alpha})`);
           gradient.addColorStop(1, `rgba(${star.color}, 0)`);

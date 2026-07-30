@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
 
-// Dev-only helper: lets a browser tab POST a base64 image which is saved
-// into public/. Used to capture project screenshots; not part of the build.
+// Dev helper: POST a base64 image and it gets saved into public/.
+// Used for grabbing project screenshots, not part of the build.
 const saveShot = (): Plugin => ({
   name: "save-shot",
   apply: "serve",
@@ -34,7 +34,7 @@ const saveShot = (): Plugin => ({
 export default defineConfig({
   plugins: [react(), saveShot()],
   server: {
-    // Respect a harness-assigned port (falls back to Vite's default 5173)
+    // use PORT if it's set, otherwise vite's default
     port: process.env.PORT ? Number(process.env.PORT) : undefined,
   },
   build: {

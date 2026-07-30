@@ -29,7 +29,7 @@ body {
   @apply bg-bg text-text-primary font-body antialiased;
 }
 
-/* Minimal cursor — a small ring, with an accent dot on interactive elements */
+/* Cursor: small ring, accent dot on interactive elements */
 @media (pointer: fine) {
   html,
   body {
@@ -56,8 +56,7 @@ body {
 .accent-gradient-animated {
   background: linear-gradient(90deg, #89aacc, #4e85bf, #89aacc);
   background-size: 200% 100%;
-  /* Constant-speed one-way flow; ends of the gradient match, so the loop
-     point is invisible — no pulse/flicker at cycle boundaries. */
+  /* one-way linear flow, both ends match so the loop point doesn't show */
   animation: gradient-flow 8s linear infinite;
   will-change: background-position;
 }
@@ -88,9 +87,8 @@ body {
   }
 }
 
-/* Slow breathing ring for the guided "Full experience" option — only the
-   glow animates, never the text (animate-pulse dimmed the whole button and
-   read as flicker). */
+/* Breathing ring for the guided "Full experience" option.
+   Only the glow animates, animating the text reads as flicker. */
 .guide-glow {
   animation: guide-glow 3s ease-in-out infinite;
 }

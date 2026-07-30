@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import HlsVideo from "./HlsVideo";
 
-// Spinning-galaxy Mux stream, flipped and masked into the footer (the hero
-// now uses its own local header video).
+// Galaxy stream, flipped and masked into the footer
 const GALAXY_VIDEO_SRC =
   "https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8";
 
@@ -31,7 +30,7 @@ const Footer = () => {
 
   return (
     <footer className="relative pt-16 md:pt-20 pb-8 md:pb-12 overflow-hidden">
-      {/* Background video (flipped) — masked so the starfield dissolves into it */}
+      {/* Video */}
       <div
         className="absolute inset-0 overflow-hidden"
         style={{

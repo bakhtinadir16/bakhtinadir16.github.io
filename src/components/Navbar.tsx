@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   return (
-    // Mobile: extra right padding keeps the pill clear of the fixed hamburger
+    // extra right padding on mobile so the pill clears the hamburger
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 pl-4 pr-14 sm:px-4">
       <nav
         className={`inline-flex items-center rounded-full backdrop-blur-md border border-white/10 bg-surface px-2 py-2 transition-shadow duration-300 ${
@@ -74,7 +74,7 @@ const Navbar = () => {
 
         <span className="hidden sm:block w-px h-5 bg-stroke mx-1" />
 
-        {/* Say hi — hidden on phones (hero + footer carry the contact CTAs) */}
+        {/* Say hi, hidden on phones */}
         <a
           href="mailto:nadirbakhtics@gmail.com"
           className="group relative hidden sm:block text-xs sm:text-sm rounded-full"
